@@ -1,9 +1,6 @@
 #!python
 import csv
-import pprint
 from lxml import etree
-
-pp = pprint
 
 template = """<?xml version="1.0"?><root><Info><Location>1</Location><Version>3</Version><PB>true</PB><SMS>false</SMS></Info></root>"""
 
