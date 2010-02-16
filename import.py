@@ -1,14 +1,14 @@
 #!python
 import csv
 import pprint
-from xml.dom.minidom import parse
+from lxml import etree
 
 pp = pprint
 
-doc = parse( 'template.xml' ) # parse an XML file by name
-root = doc.getElementsByTagName( "root" )
-for node in root:
-	root = node
+#doc = parse( 'template.xml' ) # parse an XML file by name
+#root = doc.getElementsByTagName( "root" )
+#for node in root:
+#	root = node
 #print doc.toprettyxml(indent="  ")
 #root = doc.createElement( "root" )
 #doc.appendChild( root )
@@ -29,6 +29,9 @@ for node in root:
 #	doc.createElement( "SMS" ) ).appendChild(
 #		doc.createTextNode( "false" ) )
 
+template = """<?xml version="1.0"?><root><Info><Location>1</Location><Version>3</Version><PB>true</PB><SMS>false</SMS></Info></root>"""
+
+root = etree.fromstring( template )
 
 csvContacts = csv.DictReader(
 	open( "contacts.csv" ),
@@ -37,9 +40,9 @@ csvContacts = csv.DictReader(
 )
 
 necessary = {
-	"eLocation" 		: 1, \
-	"uGroupId" 		: 3, \
-	"uSize"			: 0, \
+	"eLocation" 		: "1", \
+	"uGroupId" 		: "3", \
+	"uSize"			: "0", \
 	"szName"		: "", \
 	"szCompany"		: "", \
 	"szDuty"		: "", \
@@ -47,7 +50,7 @@ necessary = {
 	"szOtherEmail"		: "", \
 	"szHomeEmail"		: "", \
 	"szNotes"		: "", \
-	"uAvailableNumber"	: 0, \
+	"uAvailableNumber"	: "0", \
 	"szPhoneName0"		: "", \
 	"szPhoneNumber0"	: "", \
 	"szPhoneName1"		: "", \
@@ -74,11 +77,8 @@ map = {
 	"szCompany" 		: "Company", \
 }
 
-xmlContacts	= []
-
 for csvContact in csvContacts:
-	childInfo = doc.createElement("ChildInfo")
-	childInfo.setAttribute( "DataType", "PB" )
+	childInfo = etree.SubElement( root, "ChildInfo", DataType="PB" )
 	xmlContact = necessary
 	for k, v in map.items():
 		if type( v ) == type( [] ):
@@ -89,17 +89,11 @@ for csvContact in csvContacts:
 			xmlContact[ k ] = " ".join( s )
 		else:
 			xmlContact[ k ] = csvContact[ v ]
-	for k, v in xmlContact.items():
-		if len( "%s" % v ) > 0:
-			childInfo.appendChild(
-				doc.createElement( k ) ).appendChild(
-					doc.createTextNode( "%s" % v ) )
-		else:
-			childInfo.appendChild(
-				doc.createElement( k ) )
-			
-	root.appendChild( childInfo )
 	
-
-
-print doc.toprettyxml(indent="  ")
+	for k, v in xmlContact.items():
+		e = etree.SubElement( childInfo, k )
+		if len( "%s" % v ) > 0:
+			e.text = "%s" % ( v.decode( "windows-1252" ) )
+					
+print etree.tostring( root )
+	
