@@ -5,30 +5,6 @@ from lxml import etree
 
 pp = pprint
 
-#doc = parse( 'template.xml' ) # parse an XML file by name
-#root = doc.getElementsByTagName( "root" )
-#for node in root:
-#	root = node
-#print doc.toprettyxml(indent="  ")
-#root = doc.createElement( "root" )
-#doc.appendChild( root )
-
-
-#info = doc.createElement("Info")
-#root.appendChild(info)
-#info.appendChild(
-#	doc.createElement( "Location" ) ).appendChild(
-#		doc.createTextNode( "1" ) )
-#info.appendChild(
-#	doc.createElement( "Version" ) ).appendChild(
-#		doc.createTextNode( "3" ) )
-#info.appendChild(
-#	doc.createElement( "PB" ) ).appendChild(
-#		doc.createTextNode( "true" ) )
-#info.appendChild(
-#	doc.createElement( "SMS" ) ).appendChild(
-#		doc.createTextNode( "false" ) )
-
 template = """<?xml version="1.0"?><root><Info><Location>1</Location><Version>3</Version><PB>true</PB><SMS>false</SMS></Info></root>"""
 
 root = etree.fromstring( template )
